@@ -50,7 +50,12 @@ const appCheck = initializeAppCheck(firebaseApp, {
 // ==========================================
 
 const ai = getAI(firebaseApp, {
-    backend: new GoogleAIBackend()
+    backend: new GoogleAIBackend(),
+
+    // IMPORTANTE:
+    // Firebase AI Logic utiliza tokens de App Check
+    // de uso limitado para las peticiones a Gemini.
+    useLimitedUseAppCheckTokens: true
 });
 
 
@@ -115,6 +120,7 @@ si realmente no lo has comprado.
 Sé siempre honesta sobre lo que puedes hacer.
 
 Responde directamente a PEKETS.
+
 `;
 
 
@@ -129,7 +135,9 @@ async function hablarConPekets(message) {
         content: message
     });
 
+
     let conversacion = "";
+
 
     for (const mensaje of historial) {
 
@@ -142,7 +150,9 @@ async function hablarConPekets(message) {
 
             conversacion +=
                 `PEKETS AI: ${mensaje.content}\n`;
+
         }
+
     }
 
 
@@ -168,6 +178,7 @@ Responde directamente a PEKETS.
         const result =
             await model.generateContent(prompt);
 
+
         const respuesta =
             result.response.text();
 
@@ -180,12 +191,19 @@ Responde directamente a PEKETS.
 
         return respuesta;
 
+
     } catch (error) {
 
-        console.error("Error Gemini:", error);
+        console.error(
+            "Error Gemini:",
+            error
+        );
+
 
         return "💕 PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
+
     }
+
 }
 
 
@@ -193,7 +211,10 @@ Responde directamente a PEKETS.
 // HACER GEMINI ACCESIBLE A SCRIPT.JS
 // ==========================================
 
-window.hablarConPekets = hablarConPekets;
+window.hablarConPekets =
+    hablarConPekets;
 
-console.log("❤️ PEKETS AI cargada correctamente");
 
+console.log(
+    "❤️ PEKETS AI cargada correctamente"
+);
