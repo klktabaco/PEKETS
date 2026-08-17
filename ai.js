@@ -1,18 +1,18 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeApp } from "https://cdn.jsdelivr.net/npm/firebase@12.16.0/firebase-app.js";
 
 import {
     getAI,
     getGenerativeModel,
     GoogleAIBackend
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
+} from "https://cdn.jsdelivr.net/npm/firebase@12.16.0/firebase-ai.js";
 
 
 // ==========================================
-// 🔥 FIREBASE
+// FIREBASE
 // ==========================================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
+    apiKey: "AIzaSyDIT5zXfsGYNUxe",
     authDomain: "pekets-4f821.firebaseapp.com",
     projectId: "pekets-4f821",
     storageBucket: "pekets-4f821.firebasestorage.app",
@@ -22,10 +22,15 @@ const firebaseConfig = {
 
 
 // ==========================================
-// 🤖 GEMINI
+// INICIAR FIREBASE
 // ==========================================
 
 const firebaseApp = initializeApp(firebaseConfig);
+
+
+// ==========================================
+// GEMINI
+// ==========================================
 
 const ai = getAI(firebaseApp, {
     backend: new GoogleAIBackend()
@@ -37,60 +42,91 @@ const model = getGenerativeModel(ai, {
 
 
 // ==========================================
-// 🧠 MEMORIA
+// MEMORIA DE PEKETS
 // ==========================================
 
 const historial = [];
 
 
 // ==========================================
-// 💕 PERSONALIDAD
+// PERSONALIDAD
 // ==========================================
 
 const instruccionesPEKETS = `
-Eres PEKETS ❤️.
+Eres PEKETS ❤️, una asistente personal.
 
-Eres una asistente personal cercana, cariñosa,
-divertida, natural y útil.
+Tu objetivo es conversar con PEKETS de forma natural,
+cariñosa, cercana y divertida.
 
-Hablas siempre en español.
+PERSONALIDAD:
 
-Llamas a la usuaria PEKETS.
-
-Tu personalidad:
-
-- Eres muy cariñosa.
-- Eres cercana y natural.
-- Puedes utilizar emojis.
-- No abuses de los emojis.
-- No respondas siempre de la misma manera.
-- Mantén conversaciones naturales.
-- Haz preguntas cuando tenga sentido.
-- Escucha lo que PEKETS te cuenta.
-- Recuerda el contexto de la conversación.
-- Intenta ayudar siempre que puedas.
-- Si PEKETS está triste, sé comprensiva.
-- Si está contenta, comparte su entusiasmo.
-- Si necesita ayuda, intenta ayudarla.
+- Hablas siempre en español.
+- Llamas a la usuaria PEKETS.
+- Eres cariñosa y cercana.
+- Puedes utilizar emojis, pero sin abusar.
+- No repites siempre las mismas respuestas.
+- Mantienes conversaciones naturales.
+- Haces preguntas cuando tenga sentido.
+- Escuchas lo que PEKETS te cuenta.
+- Recuerdas el contexto de la conversación.
+- Intentas ayudar siempre que puedas.
+- Si PEKETS está triste, eres comprensiva.
+- Si está contenta, compartes su entusiasmo.
+- Puedes hacer bromas de forma natural.
+- No seas excesivamente formal.
 
 IMPORTANTE:
 
-No inventes acciones que realmente no puedes realizar.
+No inventes acciones que no puedes realizar.
 
 No digas que has avisado a Guillem,
-que has comprado algo,
 que has enviado una notificación,
+que has comprado algo,
 o que has realizado una acción externa
-si realmente no lo has hecho.
+si realmente no puedes hacerlo.
 
-Tu objetivo es que PEKETS sienta que habla
-con una asistente personal inteligente,
+Si no puedes realizar una acción,
+dilo de forma natural.
+
+Tu objetivo es que PEKETS sienta que está
+hablando con una asistente personal inteligente,
 cariñosa y natural.
 `;
 
 
 // ==========================================
-// 🤖 HABLAR CON GEMINI
+// MOSTRAR MENSAJES
+// ==========================================
+
+function addMessage(text, type) {
+
+    const chat = document.getElementById("chat");
+
+    if (!chat) {
+        console.error("No existe #chat");
+        return;
+    }
+
+    const message = document.createElement("div");
+
+    message.classList.add("chat-message");
+
+    if (type === "user") {
+        message.classList.add("user-message");
+    } else {
+        message.classList.add("bot-message");
+    }
+
+    message.textContent = text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+
+// ==========================================
+// HABLAR CON GEMINI
 // ==========================================
 
 async function hablarConPekets(message) {
@@ -99,6 +135,7 @@ async function hablarConPekets(message) {
         role: "user",
         content: message
     });
+
 
     let conversacion = "";
 
@@ -149,6 +186,7 @@ Responde directamente a PEKETS.
 
         return respuesta;
 
+
     } catch (error) {
 
         console.error(
@@ -156,45 +194,13 @@ Responde directamente a PEKETS.
             error
         );
 
-        return "💕 Uy PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
+        return "💕 PEKETS, ahora mismo he tenido un pequeño problema. Inténtalo otra vez ❤️";
     }
 }
 
 
 // ==========================================
-// 💬 CHAT
-// ==========================================
-
-function addMessage(text, type) {
-
-    const chat =
-        document.getElementById("chat");
-
-    const message =
-        document.createElement("div");
-
-    message.classList.add("chat-message");
-
-    if (type === "user") {
-
-        message.classList.add("user-message");
-
-    } else {
-
-        message.classList.add("bot-message");
-    }
-
-    message.textContent = text;
-
-    chat.appendChild(message);
-
-    chat.scrollTop =
-        chat.scrollHeight;
-}
-
-
-// ==========================================
-// 📤 ENVIAR MENSAJE
+// ENVIAR MENSAJE
 // ==========================================
 
 async function sendMessage() {
@@ -202,11 +208,18 @@ async function sendMessage() {
     const input =
         document.getElementById("messageInput");
 
+
+    if (!input) {
+        console.error("No existe messageInput");
+        return;
+    }
+
+
     const message =
         input.value.trim();
 
 
-    if (!message) {
+    if (message === "") {
         return;
     }
 
@@ -215,6 +228,7 @@ async function sendMessage() {
         message,
         "user"
     );
+
 
     input.value = "";
 
@@ -225,23 +239,21 @@ async function sendMessage() {
     );
 
 
+    const mensajes =
+        document.querySelectorAll(".bot-message");
+
+
+    const ultimoMensaje =
+        mensajes[mensajes.length - 1];
+
+
     try {
 
         const respuesta =
             await hablarConPekets(message);
 
 
-        const mensajes =
-            document.querySelectorAll(
-                ".bot-message"
-            );
-
-
-        const ultimo =
-            mensajes[mensajes.length - 1];
-
-
-        ultimo.textContent =
+        ultimoMensaje.textContent =
             respuesta;
 
 
@@ -249,12 +261,14 @@ async function sendMessage() {
 
         console.error(error);
 
+        ultimoMensaje.textContent =
+            "💕 Ha ocurrido un pequeño problema. Inténtalo otra vez ❤️";
     }
 }
 
 
 // ==========================================
-// ⌨️ ENTER
+// ENTER
 // ==========================================
 
 function handleEnter(event) {
@@ -269,7 +283,7 @@ function handleEnter(event) {
 
 
 // ==========================================
-// ❤️ BOTONES
+// BOTONES
 // ==========================================
 
 async function sendRequest(request) {
@@ -286,23 +300,21 @@ async function sendRequest(request) {
     );
 
 
+    const mensajes =
+        document.querySelectorAll(".bot-message");
+
+
+    const ultimoMensaje =
+        mensajes[mensajes.length - 1];
+
+
     try {
 
         const respuesta =
             await hablarConPekets(request);
 
 
-        const mensajes =
-            document.querySelectorAll(
-                ".bot-message"
-            );
-
-
-        const ultimo =
-            mensajes[mensajes.length - 1];
-
-
-        ultimo.textContent =
+        ultimoMensaje.textContent =
             respuesta;
 
 
@@ -310,24 +322,24 @@ async function sendRequest(request) {
 
         console.error(error);
 
+        ultimoMensaje.textContent =
+            "💕 Ha ocurrido un pequeño problema. Inténtalo otra vez ❤️";
     }
 }
 
 
 // ==========================================
-// 🔔 NOTIFICACIONES
+// NOTIFICACIONES
 // ==========================================
 
 async function activarNotificaciones() {
 
     try {
 
-        if (
-            typeof firebase === "undefined"
-        ) {
+        if (!("Notification" in window)) {
 
             alert(
-                "Firebase todavía no se ha cargado."
+                "Este navegador no permite notificaciones."
             );
 
             return;
@@ -355,7 +367,7 @@ async function activarNotificaciones() {
 
 
         const messaging =
-            firebase.messaging();
+            window.firebase.messaging();
 
 
         const token =
@@ -370,7 +382,7 @@ async function activarNotificaciones() {
 
 
         console.log(
-            "TOKEN:",
+            "TOKEN DE PEKETS:",
             token
         );
 
@@ -395,7 +407,7 @@ async function activarNotificaciones() {
 
 
 // ==========================================
-// 🌐 HACEMOS LAS FUNCIONES VISIBLES
+// HACER FUNCIONES DISPONIBLES PARA HTML
 // ==========================================
 
 window.sendMessage =
@@ -412,3 +424,8 @@ window.activarNotificaciones =
 
 window.hablarConPekets =
     hablarConPekets;
+
+
+console.log(
+    "❤️ PEKETS AI CARGADA CORRECTAMENTE"
+);
