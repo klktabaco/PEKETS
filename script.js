@@ -9,7 +9,7 @@ let requests = [];
 
 
 // ==========================================
-// 💬 AÑADIR MENSAJE AL CHAT
+// 💬 AÑADIR MENSAJE
 // ==========================================
 
 function addMessage(text, type) {
@@ -33,23 +33,33 @@ function addMessage(text, type) {
 
 
 // ==========================================
-// 🔔 CREAR SOLICITUD PARA GUILLEM
+// 🔔 CREAR SOLICITUD
 // ==========================================
 
 function createRequest(title, description, emoji) {
 
     const request = {
+
         id: Date.now(),
+
         title: title,
+
         description: description,
+
         emoji: emoji,
+
         status: "Pendiente",
+
         date: new Date().toLocaleString()
+
     };
 
     requests.push(request);
 
-    console.log("🔔 NUEVA SOLICITUD:", request);
+    console.log(
+        "🔔 NUEVA SOLICITUD:",
+        request
+    );
 
     addMessage(
         `🔔 Solicitud creada: ${emoji} ${title}.`,
@@ -59,37 +69,64 @@ function createRequest(title, description, emoji) {
 
 
 // ==========================================
-// 🤖 ENVIAR MENSAJE A PEKETS
+// 🤖 ENVIAR MENSAJE
 // ==========================================
 
 async function sendMessage() {
 
-    const message = messageInput.value.trim();
+    const message =
+        messageInput.value.trim();
+
 
     if (message === "") {
         return;
     }
 
-    // Mostrar mensaje de PEKETS
-    addMessage(message, "user");
 
-    // Limpiar caja
+    addMessage(
+        message,
+        "user"
+    );
+
+
     messageInput.value = "";
+
 
     try {
 
-        // Esperamos a que la IA responda
-        const respuesta = await window.hablarConPekets(message);
+        if (
+            typeof window.hablarConPekets !==
+            "function"
+        ) {
 
-        // Mostrar respuesta
-        addMessage(respuesta, "bot");
+            throw new Error(
+                "La IA todavía no está cargada."
+            );
+        }
+
+
+        const respuesta =
+            await window.hablarConPekets(
+                message
+            );
+
+
+        addMessage(
+            respuesta,
+            "bot"
+        );
+
 
     } catch (error) {
 
-        console.error("❌ Error hablando con PEKETS:", error);
+        console.error(
+            "❌ Error:",
+            error
+        );
+
 
         addMessage(
-            "💕 Uy PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️",
+            "💕 PEKETS, estoy teniendo un problema para conectarme con mi IA. ❤️",
             "bot"
         );
     }
@@ -97,7 +134,7 @@ async function sendMessage() {
 
 
 // ==========================================
-// ⌨️ ENVIAR CON ENTER
+// ⌨️ ENTER
 // ==========================================
 
 function handleEnter(event) {
@@ -117,82 +154,88 @@ function handleEnter(event) {
 
 function sendRequest(request) {
 
-    addMessage(request, "user");
+    addMessage(
+        request,
+        "user"
+    );
 
-    setTimeout(() => {
 
-        let response = "";
+    setTimeout(async () => {
 
-        if (request === "Tengo hambre") {
+        try {
 
-            response =
-                "🍔 Vale PEKETS ❤️ ¿Qué te apetece comer? ¿Pizza, sushi, hamburguesa o alguna otra cosa?";
+            if (
+                typeof window.hablarConPekets ===
+                "function"
+            ) {
 
-        }
+                const respuesta =
+                    await window.hablarConPekets(
+                        request
+                    );
 
-        else if (request === "Tengo la regla") {
+                addMessage(
+                    respuesta,
+                    "bot"
+                );
 
-            response =
-                "🩸❤️ Vale PEKETS. ¿Necesitas mimos, algo dulce, un masaje o simplemente que te haga compañía?";
+            } else {
 
-        }
+                addMessage(
+                    "💕 Espera un momento PEKETS, estoy iniciándome.",
+                    "bot"
+                );
+            }
 
-        else if (request === "Necesito cuidados") {
+        } catch (error) {
 
-            response =
-                "🥰 Claro PEKETS. Cuéntame qué necesitas y vemos cómo puedo ayudarte ❤️";
-
-        }
-
-        else if (request === "Necesito mimos") {
-
-            createRequest(
-                "Necesita mimos",
-                "PEKETS ha indicado que necesita mimos ❤️",
-                "❤️"
+            console.error(
+                "❌ Error:",
+                error
             );
 
-            return;
+            addMessage(
+                "💕 Uy PEKETS, he tenido un pequeño problema ❤️",
+                "bot"
+            );
         }
 
-        else {
-
-            response =
-                "💕 Cuéntame qué necesitas, PEKETS.";
-
-        }
-
-        addMessage(response, "bot");
-
-    }, 300);
+    }, 200);
 }
 
 
 // ==========================================
-// 🔔 FIREBASE - NOTIFICACIONES
+// 🔔 FIREBASE NOTIFICACIONES
 // ==========================================
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyDIT5zXfsGYNUexGUVAzD9bhTemeoq1A",
+    apiKey:
+        "AIzaSyDIT5zXfsGYNUexGUVAzD9bhTemeoq1A",
 
-    authDomain: "pekets-4f821.firebaseapp.com",
+    authDomain:
+        "pekets-4f821.firebaseapp.com",
 
-    projectId: "pekets-4f821",
+    projectId:
+        "pekets-4f821",
 
-    storageBucket: "pekets-4f821.firebasestorage.app",
+    storageBucket:
+        "pekets-4f821.firebasestorage.app",
 
-    messagingSenderId: "949543833442",
+    messagingSenderId:
+        "949543833442",
 
-    appId: "1:949543833442:web:973bf89f058020c6e8e63b"
+    appId:
+        "1:949543833442:web:973bf89f058020c6e8e63b"
 };
 
 
-// Inicializar Firebase
+firebase.initializeApp(
+    firebaseConfig
+);
 
-firebase.initializeApp(firebaseConfig);
-
-const messaging = firebase.messaging();
+const messaging =
+    firebase.messaging();
 
 
 // ==========================================
@@ -205,6 +248,7 @@ async function activarNotificaciones() {
 
         const permiso =
             await Notification.requestPermission();
+
 
         if (permiso !== "granted") {
 
@@ -230,34 +274,34 @@ async function activarNotificaciones() {
 
                 serviceWorkerRegistration:
                     registration
+
             });
 
 
         if (token) {
 
             console.log(
-                "✅ PEKETS está registrado para recibir notificaciones."
+                "✅ Notificaciones activadas"
             );
 
-            console.log("TOKEN:", token);
+            console.log(
+                "TOKEN:",
+                token
+            );
 
             alert(
                 "🔔 ¡Notificaciones activadas! ❤️"
             );
 
-        }
-
-        else {
+        } else {
 
             console.log(
-                "❌ No se ha podido obtener el token."
+                "❌ No se pudo obtener el token."
             );
-
         }
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "❌ Error activando notificaciones:",

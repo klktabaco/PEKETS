@@ -1,14 +1,14 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 import {
     getAI,
     getGenerativeModel,
     GoogleAIBackend
-} from "https://www.gstatic.com/firebasejs/12.7.1/firebase-ai.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
 
 
 // ==========================================
-// 🔥 CONFIGURACIÓN FIREBASE PEKETS
+// 🔥 FIREBASE
 // ==========================================
 
 const firebaseConfig = {
@@ -22,107 +22,115 @@ const firebaseConfig = {
 
 
 // ==========================================
-// 🤖 INICIALIZAR FIREBASE AI
+// 🤖 FIREBASE AI
 // ==========================================
 
-const firebaseAppAI = initializeApp(
-    firebaseConfig,
-    "PEKETS_AI"
-);
+const firebaseApp = initializeApp(firebaseConfig);
 
-const ai = getAI(firebaseAppAI, {
+const ai = getAI(firebaseApp, {
     backend: new GoogleAIBackend()
 });
 
 const model = getGenerativeModel(ai, {
-    model: "gemini-3.6-flash"
+    model: "gemini-3.5-flash"
 });
 
 
 // ==========================================
-// 🧠 MEMORIA DE PEKETS
+// 🧠 MEMORIA
 // ==========================================
 
 const historial = [];
 
 
 // ==========================================
-// 💕 PERSONALIDAD DE PEKETS
+// 💕 PERSONALIDAD PEKETS
 // ==========================================
 
 const instruccionesPEKETS = `
-Eres PEKETS ❤️, una asistente personal creada para ayudar a una persona
-de forma cercana, cariñosa, divertida y natural.
+Eres PEKETS ❤️.
+
+Eres una asistente personal cercana, cariñosa, divertida,
+natural y útil.
+
+Hablas siempre en español.
+
+Llamas a la usuaria PEKETS.
 
 Tu personalidad:
 
-- Eres muy cariñosa.
-- Hablas siempre en español.
-- Llamas a la usuaria PEKETS.
-- Tu tono es cercano, natural y como una amiga que escucha y ayuda.
-- Puedes utilizar emojis, pero sin abusar.
+- Eres cariñosa.
+- Eres cercana.
+- Eres natural.
+- Puedes utilizar emojis.
+- No abuses de los emojis.
 - No respondas siempre de la misma manera.
 - Mantén conversaciones naturales.
 - Haz preguntas cuando tenga sentido.
-- Si PEKETS te cuenta algo, continúa la conversación sobre ello.
-- Intenta entender qué necesita realmente PEKETS.
-- Si necesita ayuda, intenta orientarla.
-- Si pide consejo, dale una respuesta útil y razonada.
-- Nunca inventes que has realizado acciones que realmente no puedes realizar.
-- No digas que has avisado a Guillem si realmente no existe una función para hacerlo.
-- Si no puedes realizar una acción, dilo claramente.
-- Sé dulce y cariñosa, pero también natural.
+- Escucha lo que PEKETS te cuenta.
+- Recuerda el contexto de la conversación.
+- Intenta ayudar siempre que puedas.
+- Si PEKETS está triste, sé comprensiva.
+- Si está contenta, comparte su entusiasmo.
+- Si tiene hambre, puedes ayudarla a decidir qué comer.
+- Si necesita mimos, responde de forma cariñosa.
+- Si pide consejo, intenta darle un consejo útil.
 - No seas excesivamente formal.
-- Recuerda el contexto de la conversación para responder de forma coherente.
 
-PEKETS es la persona que está hablando contigo.
+MUY IMPORTANTE:
 
-Tu objetivo es que PEKETS sienta que está hablando con una asistente personal
-cercana, inteligente, cariñosa y natural.
+No inventes acciones que no puedes realizar.
+
+No digas que has avisado a Guillem,
+que has comprado algo,
+que has enviado una notificación,
+o que has realizado una acción externa
+si realmente no tienes esa capacidad.
+
+Si no puedes realizar una acción,
+dilo claramente.
+
+Tu objetivo es que PEKETS sienta que habla
+con una asistente personal inteligente,
+cariñosa y natural.
 `;
 
 
 // ==========================================
-// 🤖 FUNCIÓN PRINCIPAL DE PEKETS
+// 🤖 HABLAR CON PEKETS
 // ==========================================
 
-async function getResponse(message) {
+async function hablarConPekets(message) {
 
     try {
 
-        // Guardamos el mensaje de PEKETS
         historial.push({
             role: "user",
             content: message
         });
 
 
-        // Construimos el historial de conversación
         let conversacion = "";
 
-        for (const mensajeHistorial of historial) {
+        for (const mensaje of historial) {
 
-            if (mensajeHistorial.role === "user") {
+            if (mensaje.role === "user") {
 
                 conversacion +=
-                    `PEKETS: ${mensajeHistorial.content}\n`;
+                    `PEKETS: ${mensaje.content}\n`;
 
             } else {
 
                 conversacion +=
-                    `PEKETS AI: ${mensajeHistorial.content}\n`;
+                    `PEKETS AI: ${mensaje.content}\n`;
             }
         }
 
 
-        // ==========================================
-        // 🧠 PROMPT
-        // ==========================================
-
         const prompt = `
 ${instruccionesPEKETS}
 
-HISTORIAL DE CONVERSACIÓN:
+HISTORIAL DE LA CONVERSACIÓN:
 
 ${conversacion}
 
@@ -134,18 +142,13 @@ Responde directamente a PEKETS.
 `;
 
 
-        // ==========================================
-        // 🚀 ENVIAR A GEMINI
-        // ==========================================
-
-        const result = await model.generateContent(prompt);
-
-        const respuesta = result.response.text();
+        const result =
+            await model.generateContent(prompt);
 
 
-        // ==========================================
-        // 💾 GUARDAR RESPUESTA EN MEMORIA
-        // ==========================================
+        const respuesta =
+            result.response.text();
+
 
         historial.push({
             role: "assistant",
@@ -157,7 +160,10 @@ Responde directamente a PEKETS.
 
     } catch (error) {
 
-        console.error("Error hablando con Gemini:", error);
+        console.error(
+            "❌ Error con Gemini:",
+            error
+        );
 
         return "💕 Uy PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
     }
@@ -165,7 +171,7 @@ Responde directamente a PEKETS.
 
 
 // ==========================================
-// 🌐 CONECTAR CON script.js
+// 🌐 HACER LA FUNCIÓN VISIBLE PARA script.js
 // ==========================================
 
-window.hablarConPekets = getResponse;
+window.hablarConPekets = hablarConPekets;
