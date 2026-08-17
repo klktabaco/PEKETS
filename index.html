@@ -5,36 +5,22 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>PEKETS ❤️</title>
 
+    <link rel="stylesheet" href="style.css">
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-
-    <!-- FIREBASE PARA NOTIFICACIONES -->
-
-    <script src="https://cdn.jsdelivr.net/npm/firebase@12.16.0/firebase-app-compat.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/firebase@12.16.0/firebase-messaging-compat.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging-compat.js"></script>
 
 </head>
 
 
 <body>
 
-
 <div class="app">
-
-
-    <!-- CABECERA -->
 
     <div class="header">
 
@@ -43,19 +29,12 @@
         </div>
 
         <div>
-
             <h1>PEKETS</h1>
-
-            <p>
-                Tu asistente personal
-            </p>
-
+            <p>Tu asistente personal</p>
         </div>
 
     </div>
 
-
-    <!-- BIENVENIDA -->
 
     <div class="welcome">
 
@@ -69,22 +48,16 @@
 
             <br>
 
-            ¿Qué necesitas?
-            Estoy aquí para ayudarte.
+            ¿Qué necesitas? Estoy aquí para ayudarte.
 
         </div>
 
     </div>
 
 
-    <!-- BOTONES -->
-
     <div class="options">
 
-
-        <button
-            onclick="sendRequest('Tengo hambre')"
-        >
+        <button onclick="sendRequest('Tengo hambre')">
 
             🍔
 
@@ -95,9 +68,7 @@
         </button>
 
 
-        <button
-            onclick="sendRequest('Tengo la regla')"
-        >
+        <button onclick="sendRequest('Tengo la regla')">
 
             💧
 
@@ -108,9 +79,7 @@
         </button>
 
 
-        <button
-            onclick="sendRequest('Necesito cuidados')"
-        >
+        <button onclick="sendRequest('Necesito cuidados')">
 
             🙋
 
@@ -121,9 +90,7 @@
         </button>
 
 
-        <button
-            onclick="sendRequest('Necesito mimos')"
-        >
+        <button onclick="sendRequest('Necesito mimos')">
 
             ❤️
 
@@ -133,11 +100,8 @@
 
         </button>
 
-
     </div>
 
-
-    <!-- NOTIFICACIONES -->
 
     <button
         onclick="activarNotificaciones()"
@@ -149,12 +113,8 @@
     </button>
 
 
-    <!-- CHAT -->
-
     <div id="chat"></div>
 
-
-    <!-- INPUT -->
 
     <div class="input-area">
 
@@ -165,28 +125,29 @@
             onkeydown="handleEnter(event)"
         >
 
-
         <button
             onclick="sendMessage()"
             class="send-button"
         >
-
             ➤
-
         </button>
 
     </div>
 
-
 </div>
 
 
-<!-- PEKETS AI -->
+<!-- GEMINI -->
 
 <script
     type="module"
-    src="ai.js?v=4"
+    src="ai.js?v=5"
 ></script>
+
+
+<!-- FUNCIONES DE LA APP -->
+
+<script src="script.js"></script>
 
 
 </body>
