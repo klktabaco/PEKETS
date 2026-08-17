@@ -1,71 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>PEKETS ❤️</title>
 
     <link rel="stylesheet" href="style.css">
 
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging-compat.js"></script>
+
 </head>
 
 <body>
 
 <div class="app">
 
+    <!-- CABECERA -->
+
     <div class="header">
-        <div class="heart">❤️</div>
+
+        <div class="heart">
+            ❤️
+        </div>
 
         <div>
             <h1>PEKETS</h1>
             <p>Tu asistente personal</p>
         </div>
+
     </div>
 
+
+    <!-- BIENVENIDA -->
+
     <div class="welcome">
+
         💕
+
         <div>
+
             <strong>Hola, PEKETS ❤️</strong>
+
             <br>
+
             ¿Qué necesitas? Estoy aquí para ayudarte.
+
         </div>
+
     </div>
+
+
+    <!-- BOTONES RÁPIDOS -->
 
     <div class="options">
 
         <button onclick="sendRequest('Tengo hambre')">
+
             🍔
-            <span>Tengo hambre</span>
+
+            <span>
+                Tengo hambre
+            </span>
+
         </button>
+
 
         <button onclick="sendRequest('Tengo la regla')">
+
             💧
-            <span>Tengo la regla</span>
+
+            <span>
+                Tengo la regla
+            </span>
+
         </button>
+
 
         <button onclick="sendRequest('Necesito cuidados')">
+
             🙋
-            <span>Necesito cuidados</span>
+
+            <span>
+                Necesito cuidados
+            </span>
+
         </button>
 
+
         <button onclick="sendRequest('Necesito mimos')">
+
             ❤️
-            <span>Necesito mimos</span>
+
+            <span>
+                Necesito mimos
+            </span>
+
         </button>
 
     </div>
 
+
     <!-- NOTIFICACIONES -->
 
-    <button onclick="activarNotificaciones()" class="notification-button">
+    <button
+        onclick="activarNotificaciones()"
+        class="notification-button"
+    >
+
         🔔 Activar notificaciones
+
     </button>
+
+
+    <!-- CHAT -->
 
     <div id="chat"></div>
 
+
+    <!-- ESCRIBIR MENSAJE -->
+
     <div class="input-area">
+
         <input
             id="messageInput"
             type="text"
@@ -73,16 +132,36 @@
             onkeydown="handleEnter(event)"
         >
 
-        <button onclick="sendMessage()" class="send-button">
+
+        <button
+            onclick="sendMessage()"
+            class="send-button"
+        >
+
             ➤
+
         </button>
+
     </div>
 
 </div>
 
-<script type="module" src="ai.js"></script>
 
-<script type="module" src="script.js"></script>
+<!-- IA DE PEKETS -->
+
+<script
+    type="module"
+    src="ai.js"
+></script>
+
+
+<!-- SCRIPT PRINCIPAL -->
+
+<script
+    src="script.js"
+></script>
+
 
 </body>
+
 </html>
