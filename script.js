@@ -173,3 +173,62 @@ function getResponse(message) {
     return "💕 Te entiendo, PEKETS. Cuéntame un poco más qué necesitas.";
 
 }
+
+// ================================
+// 🔔 NOTIFICACIONES DE PEKETS
+// ================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
+    authDomain: "pekets-4f821.firebaseapp.com",
+    projectId: "pekets-4f821",
+    storageBucket: "pekets-4f821.firebasestorage.app",
+    messagingSenderId: "949543833442",
+    appId: "1:949543833442:web:973bf89f058020c6e8e63b"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+
+async function activarNotificaciones() {
+
+    try {
+
+        const permiso = await Notification.requestPermission();
+
+        if (permiso !== "granted") {
+            alert("PEKETS necesita permiso para enviarte notificaciones ❤️");
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.register(
+            "./firebase-messaging-sw.js"
+        );
+
+        const token = await messaging.getToken({
+            vapidKey: "BHPdYr2a2ohubzZYYsvKnL_F60wZfVhuI8NHS5CMiInY6Mt39IiEz0aajgh3vVpAzmiTnDbNqBb3OtIGhe3z80U",
+            serviceWorkerRegistration: registration
+        });
+
+        if (token) {
+
+            console.log("✅ PEKETS está registrado para recibir notificaciones.");
+            console.log("TOKEN:", token);
+
+            alert("🔔 ¡Notificaciones activadas! ❤️");
+
+        } else {
+
+            console.log("No se ha podido obtener el token.");
+
+        }
+
+    } catch (error) {
+
+        console.error("Error activando notificaciones:", error);
+
+        alert("Ha ocurrido un error al activar las notificaciones.");
+
+    }
+}
