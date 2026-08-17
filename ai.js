@@ -17,7 +17,7 @@ import {
 // ==========================================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDIT5zXfsGYNUZepsGUVAzD9bhTemeoq1A",
+    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
     authDomain: "pekets-4f821.firebaseapp.com",
     projectId: "pekets-4f821",
     storageBucket: "pekets-4f821.firebasestorage.app",
