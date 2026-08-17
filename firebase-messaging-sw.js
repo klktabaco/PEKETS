@@ -1,9 +1,9 @@
 importScripts(
-  "https://www.gstatic.com/firebasejs/12.7.1/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"
 );
 
 importScripts(
-  "https://www.gstatic.com/firebasejs/12.7.1/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging-compat.js"
 );
 
 firebase.initializeApp({
