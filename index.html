@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEKETS ❤️</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header>
+            <div class="logo">❤️</div>
+
+            <div>
+                <h1>PEKETS</h1>
+                <p>Tu asistente personal</p>
+            </div>
+        </header>
+
+        <main>
+
+            <div class="welcome">
+                <div class="bot-avatar">💗</div>
+
+                <div class="message">
+                    <strong>Hola, PEKETS ❤️</strong>
+                    <p>¿Qué necesitas? Estoy aquí para ayudarte.</p>
+                </div>
+            </div>
+
+            <div class="options">
+
+                <button onclick="sendRequest('Tengo hambre')">
+                    🍔
+                    <span>Tengo hambre</span>
+                </button>
+
+                <button onclick="sendRequest('Tengo la regla')">
+                    🩸
+                    <span>Tengo la regla</span>
+                </button>
+
+                <button onclick="sendRequest('Me duele la espalda')">
+                    💆
+                    <span>Necesito cuidados</span>
+                </button>
+
+                <button onclick="sendRequest('Necesito mimos')">
+                    ❤️
+                    <span>Necesito mimos</span>
+                </button>
+
+            </div>
+
+            <div id="chat"></div>
+
+        </main>
+
+        <footer>
+
+            <input
+                id="messageInput"
+                type="text"
+                placeholder="Escribe lo que necesitas..."
+                onkeydown="handleEnter(event)"
+            >
+
+            <button onclick="sendMessage()" class="send">
+                ➤
+            </button>
+
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
