@@ -1,4 +1,23 @@
+// ==========================================
+// FIREBASE
+// ==========================================
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+// ==========================================
+// APP CHECK
+// ==========================================
+
+import {
+    initializeAppCheck,
+    DebugProvider
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
+
+
+// ==========================================
+// FIREBASE AI LOGIC
+// ==========================================
 
 import {
     getAI,
@@ -8,12 +27,19 @@ import {
 
 
 // ==========================================
-// FIREBASE
+// ACTIVAR MODO DEBUG DE APP CHECK
+// ==========================================
+
+self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+
+
+// ==========================================
+// CONFIGURACIÓN FIREBASE
 // ==========================================
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
+    apiKey: "AIzaSyDIT5zXfsGYNUxeGUVAzD9bhTemeoq1A",
 
     authDomain: "pekets-4f821.firebaseapp.com",
 
@@ -28,7 +54,7 @@ const firebaseConfig = {
 
 
 // ==========================================
-// FIREBASE APP
+// INICIALIZAR FIREBASE
 // ==========================================
 
 const firebaseApp =
@@ -36,19 +62,40 @@ const firebaseApp =
 
 
 // ==========================================
-// GEMINI
+// INICIALIZAR APP CHECK
 // ==========================================
 
-const ai =
-    getAI(firebaseApp, {
+const appCheck = initializeAppCheck(
+    firebaseApp,
+    {
+        provider: new DebugProvider(),
+        isTokenAutoRefreshEnabled: true
+    }
+);
+
+
+// ==========================================
+// INICIALIZAR GEMINI
+// ==========================================
+
+const ai = getAI(
+    firebaseApp,
+    {
         backend: new GoogleAIBackend()
-    });
+    }
+);
 
 
-const model =
-    getGenerativeModel(ai, {
-        model: "gemini-3.6-flash"
-    });
+// ==========================================
+// MODELO GEMINI
+// ==========================================
+
+const model = getGenerativeModel(
+    ai,
+    {
+        model: "gemini-3.5-flash"
+    }
+);
 
 
 // ==========================================
@@ -59,16 +106,16 @@ const historial = [];
 
 
 // ==========================================
-// PERSONALIDAD
+// PERSONALIDAD DE PEKETS
 // ==========================================
 
 const instruccionesPEKETS = `
 
 Eres PEKETS ❤️.
 
-Eres una asistente personal creada para
-ayudar a PEKETS de forma cercana,
-cariñosa, divertida y natural.
+Eres una asistente personal creada para ayudar
+a PEKETS de forma cercana, cariñosa, divertida
+y natural.
 
 Hablas siempre en español.
 
@@ -117,11 +164,8 @@ Responde directamente a PEKETS.
 async function hablarConPekets(message) {
 
     historial.push({
-
         role: "user",
-
         content: message
-
     });
 
 
@@ -139,9 +183,7 @@ async function hablarConPekets(message) {
 
             conversacion +=
                 `PEKETS AI: ${mensaje.content}\n`;
-
         }
-
     }
 
 
@@ -149,16 +191,13 @@ async function hablarConPekets(message) {
 
 ${instruccionesPEKETS}
 
-
 HISTORIAL DE CONVERSACIÓN:
 
 ${conversacion}
 
-
 MENSAJE ACTUAL:
 
 ${message}
-
 
 Responde directamente a PEKETS.
 
@@ -176,11 +215,8 @@ Responde directamente a PEKETS.
 
 
         historial.push({
-
             role: "assistant",
-
             content: respuesta
-
         });
 
 
@@ -196,9 +232,7 @@ Responde directamente a PEKETS.
 
 
         return "💕 PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
-
     }
-
 }
 
 
