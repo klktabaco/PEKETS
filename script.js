@@ -1,9 +1,16 @@
-import { hablarConPekets } from "./ai.js";
+// ==========================================
+// 💕 PEKETS - SCRIPT PRINCIPAL
+// ==========================================
 
 const chat = document.getElementById("chat");
 const messageInput = document.getElementById("messageInput");
 
 let requests = [];
+
+
+// ==========================================
+// 💬 AÑADIR MENSAJE AL CHAT
+// ==========================================
 
 function addMessage(text, type) {
 
@@ -25,22 +32,19 @@ function addMessage(text, type) {
 }
 
 
+// ==========================================
+// 🔔 CREAR SOLICITUD PARA GUILLEM
+// ==========================================
+
 function createRequest(title, description, emoji) {
 
     const request = {
-
         id: Date.now(),
-
         title: title,
-
         description: description,
-
         emoji: emoji,
-
         status: "Pendiente",
-
         date: new Date().toLocaleString()
-
     };
 
     requests.push(request);
@@ -48,11 +52,15 @@ function createRequest(title, description, emoji) {
     console.log("🔔 NUEVA SOLICITUD:", request);
 
     addMessage(
-        `🔔 He avisado a Guillem: ${emoji} ${title} ❤️`,
+        `🔔 Solicitud creada: ${emoji} ${title}.`,
         "bot"
     );
 }
 
+
+// ==========================================
+// 🤖 ENVIAR MENSAJE A PEKETS
+// ==========================================
 
 async function sendMessage() {
 
@@ -62,77 +70,134 @@ async function sendMessage() {
         return;
     }
 
+    // Mostrar mensaje de PEKETS
     addMessage(message, "user");
 
+    // Limpiar caja
     messageInput.value = "";
-
-    addMessage(
-        "💕 Estoy pensando...",
-        "bot"
-    );
 
     try {
 
-        const respuesta = await hablarConPekets(message);
+        // Esperamos a que la IA responda
+        const respuesta = await window.hablarConPekets(message);
 
-        const mensajes = document.querySelectorAll(".bot-message");
-
-        if (mensajes.length > 0) {
-            mensajes[mensajes.length - 1].textContent = respuesta;
-        }
+        // Mostrar respuesta
+        addMessage(respuesta, "bot");
 
     } catch (error) {
 
-        console.error("Error hablando con Gemini:", error);
+        console.error("❌ Error hablando con PEKETS:", error);
 
-        const mensajes = document.querySelectorAll(".bot-message");
-
-        if (mensajes.length > 0) {
-            mensajes[mensajes.length - 1].textContent =
-                "💕 Uy PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
-        }
+        addMessage(
+            "💕 Uy PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️",
+            "bot"
+        );
     }
 }
 
+
+// ==========================================
+// ⌨️ ENVIAR CON ENTER
+// ==========================================
 
 function handleEnter(event) {
 
     if (event.key === "Enter") {
+
+        event.preventDefault();
+
         sendMessage();
     }
-
 }
 
+
+// ==========================================
+// ❤️ BOTONES RÁPIDOS
+// ==========================================
 
 function sendRequest(request) {
 
     addMessage(request, "user");
 
-    setTimeout(async () => {
+    setTimeout(() => {
 
-        try {
+        let response = "";
 
-            const respuesta = await hablarConPekets(request);
+        if (request === "Tengo hambre") {
 
-            addMessage(respuesta, "bot");
+            response =
+                "🍔 Vale PEKETS ❤️ ¿Qué te apetece comer? ¿Pizza, sushi, hamburguesa o alguna otra cosa?";
 
-        } catch (error) {
-
-            console.error(error);
-
-            addMessage(
-                "💕 Ha ocurrido un pequeño problema, PEKETS ❤️",
-                "bot"
-            );
         }
+
+        else if (request === "Tengo la regla") {
+
+            response =
+                "🩸❤️ Vale PEKETS. ¿Necesitas mimos, algo dulce, un masaje o simplemente que te haga compañía?";
+
+        }
+
+        else if (request === "Necesito cuidados") {
+
+            response =
+                "🥰 Claro PEKETS. Cuéntame qué necesitas y vemos cómo puedo ayudarte ❤️";
+
+        }
+
+        else if (request === "Necesito mimos") {
+
+            createRequest(
+                "Necesita mimos",
+                "PEKETS ha indicado que necesita mimos ❤️",
+                "❤️"
+            );
+
+            return;
+        }
+
+        else {
+
+            response =
+                "💕 Cuéntame qué necesitas, PEKETS.";
+
+        }
+
+        addMessage(response, "bot");
 
     }, 300);
 }
 
 
-// =====================================================
-// NOTIFICACIONES
-// =====================================================
+// ==========================================
+// 🔔 FIREBASE - NOTIFICACIONES
+// ==========================================
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDIT5zXfsGYNUexGUVAzD9bhTemeoq1A",
+
+    authDomain: "pekets-4f821.firebaseapp.com",
+
+    projectId: "pekets-4f821",
+
+    storageBucket: "pekets-4f821.firebasestorage.app",
+
+    messagingSenderId: "949543833442",
+
+    appId: "1:949543833442:web:973bf89f058020c6e8e63b"
+};
+
+
+// Inicializar Firebase
+
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+
+
+// ==========================================
+// 🔔 ACTIVAR NOTIFICACIONES
+// ==========================================
 
 async function activarNotificaciones() {
 
@@ -150,13 +215,12 @@ async function activarNotificaciones() {
             return;
         }
 
+
         const registration =
             await navigator.serviceWorker.register(
                 "./firebase-messaging-sw.js"
             );
 
-        const messaging =
-            firebase.messaging();
 
         const token =
             await messaging.getToken({
@@ -168,16 +232,14 @@ async function activarNotificaciones() {
                     registration
             });
 
+
         if (token) {
 
             console.log(
                 "✅ PEKETS está registrado para recibir notificaciones."
             );
 
-            console.log(
-                "TOKEN:",
-                token
-            );
+            console.log("TOKEN:", token);
 
             alert(
                 "🔔 ¡Notificaciones activadas! ❤️"
@@ -185,10 +247,20 @@ async function activarNotificaciones() {
 
         }
 
-    } catch (error) {
+        else {
+
+            console.log(
+                "❌ No se ha podido obtener el token."
+            );
+
+        }
+
+    }
+
+    catch (error) {
 
         console.error(
-            "Error activando notificaciones:",
+            "❌ Error activando notificaciones:",
             error
         );
 
