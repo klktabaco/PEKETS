@@ -1,23 +1,4 @@
-// ==========================================
-// FIREBASE
-// ==========================================
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-// ==========================================
-// APP CHECK
-// ==========================================
-
-import {
-    initializeAppCheck,
-    DebugProvider
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
-
-
-// ==========================================
-// FIREBASE AI LOGIC
-// ==========================================
 
 import {
     getAI,
@@ -25,77 +6,57 @@ import {
     GoogleAIBackend
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
 
-
-// ==========================================
-// ACTIVAR MODO DEBUG DE APP CHECK
-// ==========================================
-
-self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+import {
+    initializeAppCheck,
+    ReCaptchaV3Provider
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 
 
 // ==========================================
-// CONFIGURACIÓN FIREBASE
+// FIREBASE
 // ==========================================
 
 const firebaseConfig = {
-
-    apiKey: "AIzaSyDIT5zXfsGYNUxeGUVAzD9bhTemeoq1A",
-
+    apiKey: "AIzaSyDIT5zXfsGYNUZepsGUVAzD9bhTemeoq1A",
     authDomain: "pekets-4f821.firebaseapp.com",
-
     projectId: "pekets-4f821",
-
     storageBucket: "pekets-4f821.firebasestorage.app",
-
     messagingSenderId: "949543833442",
-
     appId: "1:949543833442:web:973bf89f058020c6e8e63b"
 };
 
 
 // ==========================================
-// INICIALIZAR FIREBASE
+// INICIAR FIREBASE
 // ==========================================
 
-const firebaseApp =
-    initializeApp(firebaseConfig, "PEKETS_AI");
-
-
-// ==========================================
-// INICIALIZAR APP CHECK
-// ==========================================
-
-const appCheck = initializeAppCheck(
-    firebaseApp,
-    {
-        provider: new DebugProvider(),
-        isTokenAutoRefreshEnabled: true
-    }
-);
+const firebaseApp = initializeApp(firebaseConfig);
 
 
 // ==========================================
-// INICIALIZAR GEMINI
+// APP CHECK
 // ==========================================
 
-const ai = getAI(
-    firebaseApp,
-    {
-        backend: new GoogleAIBackend()
-    }
-);
+const appCheck = initializeAppCheck(firebaseApp, {
+    provider: new ReCaptchaV3Provider(
+        "6LeOx4otAAAAAEALMw4BLZX8bN3U9r-gRFPdVRwI"
+    ),
+    isTokenAutoRefreshEnabled: true
+});
 
 
 // ==========================================
-// MODELO GEMINI
+// GEMINI
 // ==========================================
 
-const model = getGenerativeModel(
-    ai,
-    {
-        model: "gemini-3.5-flash"
-    }
-);
+const ai = getAI(firebaseApp, {
+    backend: new GoogleAIBackend()
+});
+
+
+const model = getGenerativeModel(ai, {
+    model: "gemini-3.6-flash"
+});
 
 
 // ==========================================
@@ -168,9 +129,7 @@ async function hablarConPekets(message) {
         content: message
     });
 
-
     let conversacion = "";
-
 
     for (const mensaje of historial) {
 
@@ -209,7 +168,6 @@ Responde directamente a PEKETS.
         const result =
             await model.generateContent(prompt);
 
-
         const respuesta =
             result.response.text();
 
@@ -222,14 +180,9 @@ Responde directamente a PEKETS.
 
         return respuesta;
 
-
     } catch (error) {
 
-        console.error(
-            "Error Gemini:",
-            error
-        );
-
+        console.error("Error Gemini:", error);
 
         return "💕 PEKETS, he tenido un pequeño problema. Inténtalo otra vez ❤️";
     }
@@ -240,10 +193,7 @@ Responde directamente a PEKETS.
 // HACER GEMINI ACCESIBLE A SCRIPT.JS
 // ==========================================
 
-window.hablarConPekets =
-    hablarConPekets;
+window.hablarConPekets = hablarConPekets;
 
+console.log("❤️ PEKETS AI cargada correctamente");
 
-console.log(
-    "❤️ PEKETS AI cargada correctamente"
-);
