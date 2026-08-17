@@ -6,84 +6,80 @@
     <title>PEKETS ❤️</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/12.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.7.1/firebase-messaging-compat.js"></script>
 </head>
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <header>
-            <div class="logo">❤️</div>
+    <div class="header">
+        <div class="heart">❤️</div>
 
-            <div>
-                <h1>PEKETS</h1>
-                <p>Tu asistente personal</p>
-            </div>
-        </header>
+        <div>
+            <h1>PEKETS</h1>
+            <p>Tu asistente personal</p>
+        </div>
+    </div>
 
-        <main>
+    <div class="welcome">
+        💕
+        <div>
+            <strong>Hola, PEKETS ❤️</strong>
+            <br>
+            ¿Qué necesitas? Estoy aquí para ayudarte.
+        </div>
+    </div>
 
-            <div class="welcome">
-                <div class="bot-avatar">💗</div>
+    <div class="options">
 
-                <div class="message">
-                    <strong>Hola, PEKETS ❤️</strong>
-                    <p>¿Qué necesitas? Estoy aquí para ayudarte.</p>
-                </div>
-            </div>
+        <button onclick="sendRequest('Tengo hambre')">
+            🍔
+            <span>Tengo hambre</span>
+        </button>
 
-            <div class="options">
+        <button onclick="sendRequest('Tengo la regla')">
+            💧
+            <span>Tengo la regla</span>
+        </button>
 
-                <button onclick="sendRequest('Tengo hambre')">
-                    🍔
-                    <span>Tengo hambre</span>
-                </button>
+        <button onclick="sendRequest('Necesito cuidados')">
+            🙋
+            <span>Necesito cuidados</span>
+        </button>
 
-                <button onclick="sendRequest('Tengo la regla')">
-                    🩸
-                    <span>Tengo la regla</span>
-                </button>
-
-                <button onclick="sendRequest('Me duele la espalda')">
-                    💆
-                    <span>Necesito cuidados</span>
-                </button>
-
-                <button onclick="sendRequest('Necesito mimos')">
-                    ❤️
-                    <span>Necesito mimos</span>
-                </button>
-
-            </div>
-
-            <div id="chat"></div>
-
-        </main>
-
-        <footer>
-
-            <input
-                id="messageInput"
-                type="text"
-                placeholder="Escribe lo que necesitas..."
-                onkeydown="handleEnter(event)"
-            >
-
-            <button onclick="sendMessage()" class="send">
-                ➤
-            </button>
-
-        </footer>
+        <button onclick="sendRequest('Necesito mimos')">
+            ❤️
+            <span>Necesito mimos</span>
+        </button>
 
     </div>
 
-<script src="https://www.gstatic.com/firebasejs/12.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.7.1/firebase-messaging-compat.js"></script>
+    <!-- NOTIFICACIONES -->
 
-<button onclick="activarNotificaciones()" class="notification-button">
-    🔔 Activar notificaciones
-</button>
-    
+    <button onclick="activarNotificaciones()" class="notification-button">
+        🔔 Activar notificaciones
+    </button>
+
+    <div id="chat"></div>
+
+    <div class="input-area">
+        <input
+            id="messageInput"
+            type="text"
+            placeholder="Escribe lo que necesitas..."
+            onkeydown="handleEnter(event)"
+        >
+
+        <button onclick="sendMessage()" class="send-button">
+            ➤
+        </button>
+    </div>
+
+</div>
+
 <script src="script.js"></script>
 
 </body>
