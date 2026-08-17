@@ -1,143 +1,81 @@
-// ==========================================
-// CHAT
-// ==========================================
-
-const chat =
-    document.getElementById("chat");
-
-const messageInput =
-    document.getElementById("messageInput");
+const chat = document.getElementById("chat");
+const messageInput = document.getElementById("messageInput");
 
 
-// ==========================================
-// MOSTRAR MENSAJE
-// ==========================================
+// ===============================
+// MOSTRAR MENSAJES
+// ===============================
 
 function addMessage(text, type) {
 
-    const message =
-        document.createElement("div");
+    const message = document.createElement("div");
 
-
-    message.classList.add(
-        "chat-message"
-    );
-
+    message.classList.add("chat-message");
 
     if (type === "user") {
-
-        message.classList.add(
-            "user-message"
-        );
-
+        message.classList.add("user-message");
     } else {
-
-        message.classList.add(
-            "bot-message"
-        );
-
+        message.classList.add("bot-message");
     }
 
+    message.textContent = text;
 
-    message.textContent =
-        text;
+    chat.appendChild(message);
 
-
-    chat.appendChild(
-        message
-    );
-
-
-    chat.scrollTop =
-        chat.scrollHeight;
+    chat.scrollTop = chat.scrollHeight;
 }
 
 
-// ==========================================
+// ===============================
 // ENVIAR MENSAJE
-// ==========================================
+// ===============================
 
 async function sendMessage() {
 
-    const message =
-        messageInput.value.trim();
-
+    const message = messageInput.value.trim();
 
     if (message === "") {
         return;
     }
 
-
-    addMessage(
-        message,
-        "user"
-    );
-
+    addMessage(message, "user");
 
     messageInput.value = "";
 
+    addMessage("💕 Estoy pensando...", "bot");
 
-    addMessage(
-        "💕 Estoy pensando...",
-        "bot"
-    );
-
+    const mensajes = document.querySelectorAll(".bot-message");
+    const ultimoMensaje = mensajes[mensajes.length - 1];
 
     try {
 
-        const respuesta =
-            await window.hablarConPekets(
-                message
-            );
+        if (typeof window.hablarConPekets === "function") {
 
+            const respuesta =
+                await window.hablarConPekets(message);
 
-        const mensajes =
-            document.querySelectorAll(
-                ".bot-message"
-            );
+            ultimoMensaje.textContent = respuesta;
 
+        } else {
 
-        const ultimo =
-            mensajes[
-                mensajes.length - 1
-            ];
+            ultimoMensaje.textContent =
+                "💕 PEKETS está iniciándose...";
 
-
-        ultimo.textContent =
-            respuesta;
-
+        }
 
     } catch (error) {
 
-        console.error(
-            "Error hablando con PEKETS:",
-            error
-        );
+        console.error("Error:", error);
 
-
-        const mensajes =
-            document.querySelectorAll(
-                ".bot-message"
-            );
-
-
-        const ultimo =
-            mensajes[
-                mensajes.length - 1
-            ];
-
-
-        ultimo.textContent =
-            "💕 Uy PEKETS, ha ocurrido un pequeño problema ❤️";
-
+        ultimoMensaje.textContent =
+            "💕 Ha ocurrido un pequeño problema ❤️";
     }
-
 }
 
 
-// ==========================================
+// ===============================
 // ENTER
-// ==========================================
+// ===============================
 
 function handleEnter(event) {
 
@@ -146,140 +84,95 @@ function handleEnter(event) {
         event.preventDefault();
 
         sendMessage();
-
     }
-
 }
 
 
-// ==========================================
+// ===============================
 // BOTONES
-// ==========================================
+// ===============================
 
 async function sendRequest(request) {
 
-    addMessage(
-        request,
-        "user"
-    );
+    addMessage(request, "user");
 
+    addMessage("💕 Estoy pensando...", "bot");
 
-    addMessage(
-        "💕 Estoy pensando...",
-        "bot"
-    );
+    const mensajes =
+        document.querySelectorAll(".bot-message");
 
+    const ultimoMensaje =
+        mensajes[mensajes.length - 1];
 
     try {
 
-        const respuesta =
-            await window.hablarConPekets(
-                request
-            );
+        if (typeof window.hablarConPekets === "function") {
 
+            const respuesta =
+                await window.hablarConPekets(request);
 
-        const mensajes =
-            document.querySelectorAll(
-                ".bot-message"
-            );
+            ultimoMensaje.textContent = respuesta;
 
+        } else {
 
-        const ultimo =
-            mensajes[
-                mensajes.length - 1
-            ];
+            // Respuestas provisionales
+            // para que los botones funcionen aunque Gemini falle
 
+            if (request === "Tengo hambre") {
 
-        ultimo.textContent =
-            respuesta;
+                ultimoMensaje.textContent =
+                    "🍔 Vale PEKETS ❤️ ¿Qué te apetece comer?";
 
+            } else if (request === "Tengo la regla") {
+
+                ultimoMensaje.textContent =
+                    "❤️ Vale PEKETS. ¿Quieres mimos, chocolate o que hablemos un rato?";
+
+            } else if (request === "Necesito cuidados") {
+
+                ultimoMensaje.textContent =
+                    "🫶 Claro PEKETS. Cuéntame qué necesitas.";
+
+            } else if (request === "Necesito mimos") {
+
+                ultimoMensaje.textContent =
+                    "❤️ Ven aquí PEKETS, te mando muchos mimos.";
+
+            }
+
+        }
 
     } catch (error) {
 
-        console.error(
-            "Error:",
-            error
-        );
+        console.error("Error:", error);
 
+        ultimoMensaje.textContent =
+            "💕 Ha ocurrido un pequeño problema ❤️";
     }
-
 }
 
 
-// ==========================================
+// ===============================
 // NOTIFICACIONES
-// ==========================================
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
-
-    authDomain: "pekets-4f821.firebaseapp.com",
-
-    projectId: "pekets-4f821",
-
-    storageBucket: "pekets-4f821.firebasestorage.app",
-
-    messagingSenderId: "949543833442",
-
-    appId: "1:949543833442:web:973bf89f058020c6e8e63b"
-
-};
-
-
-firebase.initializeApp(
-    firebaseConfig
-);
-
-
-const messaging =
-    firebase.messaging();
-
+// ===============================
 
 async function activarNotificaciones() {
+
+    if (!("Notification" in window)) {
+
+        alert(
+            "Este navegador no permite notificaciones."
+        );
+
+        return;
+    }
 
     try {
 
         const permiso =
             await Notification.requestPermission();
 
-
-        if (permiso !== "granted") {
-
-            alert(
-                "PEKETS necesita permiso para enviarte notificaciones ❤️"
-            );
-
-            return;
-
-        }
-
-
-        const registration =
-            await navigator.serviceWorker.register(
-                "./firebase-messaging-sw.js"
-            );
-
-
-        const token =
-            await messaging.getToken({
-
-                vapidKey:
-                    "BHPdYr2a2ohubzZYYsvKnL_F60wZfVhuI8NHS5CMiInY6Mt39IiEz0aajgh3vVpAzmiTnDbNqBb3OtIGhe3z80U",
-
-                serviceWorkerRegistration:
-                    registration
-
-            });
-
-
-        if (token) {
-
-            console.log(
-                "TOKEN:",
-                token
-            );
-
+        if (permiso === "granted") {
 
             alert(
                 "🔔 ¡Notificaciones activadas! ❤️"
@@ -287,42 +180,35 @@ async function activarNotificaciones() {
 
         } else {
 
-            console.log(
-                "No se ha podido obtener el token."
+            alert(
+                "🔔 Necesitas permitir las notificaciones."
             );
 
         }
 
-
     } catch (error) {
 
-        console.error(
-            "Error activando notificaciones:",
-            error
-        );
-
+        console.error(error);
 
         alert(
-            "Ha ocurrido un error al activar las notificaciones."
+            "No se han podido activar las notificaciones."
         );
-
     }
-
 }
 
 
-// ==========================================
-// FUNCIONES PARA HTML
-// ==========================================
+// ===============================
+// HACER FUNCIONES VISIBLES PARA HTML
+// ===============================
 
-window.sendMessage =
-    sendMessage;
+window.sendMessage = sendMessage;
 
-window.handleEnter =
-    handleEnter;
+window.handleEnter = handleEnter;
 
-window.sendRequest =
-    sendRequest;
+window.sendRequest = sendRequest;
 
 window.activarNotificaciones =
     activarNotificaciones;
+
+
+console.log("✅ script.js cargado correctamente");
