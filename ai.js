@@ -12,7 +12,7 @@ import {
 // ==========================================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDIT5zXfsGYNUexGUVAzD9bhTemeoq1A",
+    apiKey: "AIzaSyDIT5zXfsGYNUxepsGUVAzD9bhTemeoq1A",
     authDomain: "pekets-4f821.firebaseapp.com",
     projectId: "pekets-4f821",
     storageBucket: "pekets-4f821.firebasestorage.app",
@@ -22,7 +22,7 @@ const firebaseConfig = {
 
 
 // ==========================================
-// 🤖 FIREBASE AI
+// 🤖 GEMINI
 // ==========================================
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -44,14 +44,14 @@ const historial = [];
 
 
 // ==========================================
-// 💕 PERSONALIDAD PEKETS
+// 💕 PERSONALIDAD
 // ==========================================
 
 const instruccionesPEKETS = `
 Eres PEKETS ❤️.
 
-Eres una asistente personal cercana, cariñosa, divertida,
-natural y útil.
+Eres una asistente personal cercana, cariñosa,
+divertida, natural y útil.
 
 Hablas siempre en español.
 
@@ -59,9 +59,8 @@ Llamas a la usuaria PEKETS.
 
 Tu personalidad:
 
-- Eres cariñosa.
-- Eres cercana.
-- Eres natural.
+- Eres muy cariñosa.
+- Eres cercana y natural.
 - Puedes utilizar emojis.
 - No abuses de los emojis.
 - No respondas siempre de la misma manera.
@@ -72,23 +71,17 @@ Tu personalidad:
 - Intenta ayudar siempre que puedas.
 - Si PEKETS está triste, sé comprensiva.
 - Si está contenta, comparte su entusiasmo.
-- Si tiene hambre, puedes ayudarla a decidir qué comer.
-- Si necesita mimos, responde de forma cariñosa.
-- Si pide consejo, intenta darle un consejo útil.
-- No seas excesivamente formal.
+- Si necesita ayuda, intenta ayudarla.
 
-MUY IMPORTANTE:
+IMPORTANTE:
 
-No inventes acciones que no puedes realizar.
+No inventes acciones que realmente no puedes realizar.
 
 No digas que has avisado a Guillem,
 que has comprado algo,
 que has enviado una notificación,
 o que has realizado una acción externa
-si realmente no tienes esa capacidad.
-
-Si no puedes realizar una acción,
-dilo claramente.
+si realmente no lo has hecho.
 
 Tu objetivo es que PEKETS sienta que habla
 con una asistente personal inteligente,
@@ -97,40 +90,37 @@ cariñosa y natural.
 
 
 // ==========================================
-// 🤖 HABLAR CON PEKETS
+// 🤖 HABLAR CON GEMINI
 // ==========================================
 
 async function hablarConPekets(message) {
 
-    try {
+    historial.push({
+        role: "user",
+        content: message
+    });
 
-        historial.push({
-            role: "user",
-            content: message
-        });
+    let conversacion = "";
 
+    for (const mensaje of historial) {
 
-        let conversacion = "";
+        if (mensaje.role === "user") {
 
-        for (const mensaje of historial) {
+            conversacion +=
+                `PEKETS: ${mensaje.content}\n`;
 
-            if (mensaje.role === "user") {
+        } else {
 
-                conversacion +=
-                    `PEKETS: ${mensaje.content}\n`;
-
-            } else {
-
-                conversacion +=
-                    `PEKETS AI: ${mensaje.content}\n`;
-            }
+            conversacion +=
+                `PEKETS AI: ${mensaje.content}\n`;
         }
+    }
 
 
-        const prompt = `
+    const prompt = `
 ${instruccionesPEKETS}
 
-HISTORIAL DE LA CONVERSACIÓN:
+HISTORIAL DE CONVERSACIÓN:
 
 ${conversacion}
 
@@ -142,9 +132,10 @@ Responde directamente a PEKETS.
 `;
 
 
+    try {
+
         const result =
             await model.generateContent(prompt);
-
 
         const respuesta =
             result.response.text();
@@ -161,7 +152,7 @@ Responde directamente a PEKETS.
     } catch (error) {
 
         console.error(
-            "❌ Error con Gemini:",
+            "ERROR GEMINI:",
             error
         );
 
@@ -171,7 +162,253 @@ Responde directamente a PEKETS.
 
 
 // ==========================================
-// 🌐 HACER LA FUNCIÓN VISIBLE PARA script.js
+// 💬 CHAT
 // ==========================================
 
-window.hablarConPekets = hablarConPekets;
+function addMessage(text, type) {
+
+    const chat =
+        document.getElementById("chat");
+
+    const message =
+        document.createElement("div");
+
+    message.classList.add("chat-message");
+
+    if (type === "user") {
+
+        message.classList.add("user-message");
+
+    } else {
+
+        message.classList.add("bot-message");
+    }
+
+    message.textContent = text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop =
+        chat.scrollHeight;
+}
+
+
+// ==========================================
+// 📤 ENVIAR MENSAJE
+// ==========================================
+
+async function sendMessage() {
+
+    const input =
+        document.getElementById("messageInput");
+
+    const message =
+        input.value.trim();
+
+
+    if (!message) {
+        return;
+    }
+
+
+    addMessage(
+        message,
+        "user"
+    );
+
+    input.value = "";
+
+
+    addMessage(
+        "💕 Estoy pensando...",
+        "bot"
+    );
+
+
+    try {
+
+        const respuesta =
+            await hablarConPekets(message);
+
+
+        const mensajes =
+            document.querySelectorAll(
+                ".bot-message"
+            );
+
+
+        const ultimo =
+            mensajes[mensajes.length - 1];
+
+
+        ultimo.textContent =
+            respuesta;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
+
+// ==========================================
+// ⌨️ ENTER
+// ==========================================
+
+function handleEnter(event) {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        sendMessage();
+    }
+}
+
+
+// ==========================================
+// ❤️ BOTONES
+// ==========================================
+
+async function sendRequest(request) {
+
+    addMessage(
+        request,
+        "user"
+    );
+
+
+    addMessage(
+        "💕 Estoy pensando...",
+        "bot"
+    );
+
+
+    try {
+
+        const respuesta =
+            await hablarConPekets(request);
+
+
+        const mensajes =
+            document.querySelectorAll(
+                ".bot-message"
+            );
+
+
+        const ultimo =
+            mensajes[mensajes.length - 1];
+
+
+        ultimo.textContent =
+            respuesta;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
+
+// ==========================================
+// 🔔 NOTIFICACIONES
+// ==========================================
+
+async function activarNotificaciones() {
+
+    try {
+
+        if (
+            typeof firebase === "undefined"
+        ) {
+
+            alert(
+                "Firebase todavía no se ha cargado."
+            );
+
+            return;
+        }
+
+
+        const permiso =
+            await Notification.requestPermission();
+
+
+        if (permiso !== "granted") {
+
+            alert(
+                "Necesitas permitir las notificaciones ❤️"
+            );
+
+            return;
+        }
+
+
+        const registration =
+            await navigator.serviceWorker.register(
+                "./firebase-messaging-sw.js"
+            );
+
+
+        const messaging =
+            firebase.messaging();
+
+
+        const token =
+            await messaging.getToken({
+
+                vapidKey:
+                    "BHPdYr2a2ohubzZYYsvKnL_F60wZfVhuI8NHS5CMiInY6Mt39IiEz0aajgh3vVpAzmiTnDbNqBb3OtIGhe3z80U",
+
+                serviceWorkerRegistration:
+                    registration
+            });
+
+
+        console.log(
+            "TOKEN:",
+            token
+        );
+
+
+        alert(
+            "🔔 ¡Notificaciones activadas! ❤️"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "ERROR NOTIFICACIONES:",
+            error
+        );
+
+        alert(
+            "No se han podido activar las notificaciones."
+        );
+    }
+}
+
+
+// ==========================================
+// 🌐 HACEMOS LAS FUNCIONES VISIBLES
+// ==========================================
+
+window.sendMessage =
+    sendMessage;
+
+window.handleEnter =
+    handleEnter;
+
+window.sendRequest =
+    sendRequest;
+
+window.activarNotificaciones =
+    activarNotificaciones;
+
+window.hablarConPekets =
+    hablarConPekets;
